@@ -31,9 +31,9 @@ def single_key_parser(obj, key: str):
     return results
 
 
-def multi_key_parser(obj, *args):
-    """takes two positional arguments: an array (obj) with a json file content, and a number of keys as args.
-        Returns a chunk of the array where all the keys given are present"""
+def two_keys_parser(obj, *args):
+    """takes two positional arguments: an array (obj) with a json file content, and two keys as args.
+        Returns a chunk of the array where both the keys are present"""
     k1, k2 = args
     results = []
     if isinstance(obj, dict):
@@ -41,13 +41,13 @@ def multi_key_parser(obj, *args):
             results.append(obj)
         for k, v in obj.items():
             if isinstance(v, (dict, list)):
-                results += multi_key_parser(v, *args)
+                results += two_keys_parser(v, *args)
     if isinstance(obj, list):
         if k1 in obj and k2 in obj:
             results.append(obj)
         for i in obj:
             if isinstance(i, (dict, list)):
-                results += multi_key_parser(i, *args)
+                results += two_keys_parser(i, *args)
     return results
 
 
@@ -88,7 +88,7 @@ def get_video_pid(path2json):
     json_content = get_json_content(path2json)
     video = single_key_parser(json_content, 'Video')
     video_media_id = single_key_parser(video, 'MediaID')[0]
-    media_id_pid_list = multi_key_parser(json_content, "MediaID", "PID")
+    media_id_pid_list = two_keys_parser(json_content, "MediaID", "PID")
     for chunk in media_id_pid_list:
         for k, v in chunk.items():
             if video_media_id == chunk[k]:
