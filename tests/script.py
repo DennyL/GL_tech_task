@@ -12,7 +12,7 @@ def get_json_content(path_to_file: str) -> dict:
     return content
 
 
-def single_key_parser(obj, key: str):
+def single_key_parser(obj, key):
     """takes two positional arguments: an array (obj) with a json file content, and the key to be found in it.
     Returns a chunk of the array belonging to the key given"""
     results = []
@@ -33,7 +33,7 @@ def single_key_parser(obj, key: str):
 
 def two_keys_parser(obj, *args):
     """takes two positional arguments: an array (obj) with a json file content, and two keys as args.
-        Returns a chunk of the array where both the keys are present"""
+    Returns a chunk of the array where both the keys are present"""
     k1, k2 = args
     results = []
     if isinstance(obj, dict):
@@ -75,16 +75,18 @@ def get_logos(path2json: str) -> str:
         logos_coordinates = zip(x_coordinates, y_coordinates)
         logos_number = len(x_coordinates)
         results.append('{} logos in the video were found:'.format(logos_number))
-        for n, i in enumerate(logos_coordinates):
+        for num, coords in enumerate(logos_coordinates):
             results.append(
-                '{} logo with coordinates: {}. Location on screen: {}'.format(n+1, i, 'RIGHT' if i[0] > 860 else 'LEFT')
+                '{} logo with coordinates: {}. Location on screen: {}'.format(num+1, coords, 'RIGHT' if coords[0] > 860 else 'LEFT')
             )
     else:
         results.append('No logos in the video found')
     return "\n".join(results)
 
 
-def get_video_pid(path2json):
+def get_video_pid_hex(path2json):
+    """takes one positional argument: path to the json file as a string.
+    Returns a hex value of video PID in the file"""
     json_content = get_json_content(path2json)
     video = single_key_parser(json_content, 'Video')
     video_media_id = single_key_parser(video, 'MediaID')[0]
@@ -99,7 +101,7 @@ if __name__ == '__main__':
     path = '../src/ts_info.json'
     print(get_audio(path))
     print(get_logos(path))
-    print(get_video_pid(path))
+    print(get_video_pid_hex(path))
 
 
 
