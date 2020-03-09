@@ -59,7 +59,7 @@ def get_audio(path2json: str) -> str:
     if len(audio_in_array) == 0:
         return 'No audio in the TS found'
     else:
-        return 'Audio un the TS file: {}'.format(audio_in_array)
+        return 'Audio in the TS file: {}'.format(audio_in_array)
 
 
 def get_logos(path2json: str) -> str:
@@ -90,15 +90,16 @@ def get_video_pid_hex(path2json):
     video = single_key_parser(json_content, 'Video')
     video_media_id = single_key_parser(video, 'MediaID')[0]
     media_id_pid_list = two_keys_parser(json_content, 'MediaID', 'PID')
-    for chunk in media_id_pid_list:
-        for k, v in chunk.items():
-            if video_media_id == chunk[k]:
-                return 'Video PID in hex: {}'.format(hex(chunk['PID']))
+    if len(media_id_pid_list) > 0:
+        for chunk in media_id_pid_list:
+            for k, v in chunk.items():
+                if video_media_id == chunk[k]:
+                    return 'Video PID in hex: {}'.format(hex(chunk['PID']))
     return 'Video PID not found'
 
 
 if __name__ == '__main__':
-    path = '../src/ts_info.json'
+    path = '../json_files/ts_info.json'
     print(get_audio(path))
     print(get_logos(path))
     print(get_video_pid_hex(path))
