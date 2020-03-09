@@ -67,21 +67,20 @@ def get_logos(path2json: str) -> str:
     Returns info about logos in video block of the file, of their number and location on the screen"""
     results = []
     json_content = get_json_content(path2json)
-    video_in_json = single_key_parser(json_content, "Video")
-    logos_in_array = single_key_parser(video_in_json, "Logos")
+    video_in_json = single_key_parser(json_content, 'Video')
+    logos_in_array = single_key_parser(video_in_json, 'Logos')
     if len(logos_in_array) > 0:
         x_coordinates = single_key_parser(logos_in_array, 'X')
         y_coordinates = single_key_parser(logos_in_array, 'Y')
         logos_coordinates = zip(x_coordinates, y_coordinates)
         logos_number = len(x_coordinates)
-        results.append('{} logos in the video were found:'.format(logos_number))
-        for num, coords in enumerate(logos_coordinates):
-            results.append(
-                '{} logo with coordinates: {}. Location on screen: {}'.format(num+1, coords, 'RIGHT' if coords[0] > 860 else 'LEFT')
-            )
+        results.append('{} logos found in the video:'.format(logos_number))
+        for num, coordinates in enumerate(logos_coordinates):
+            results.append('{} logo with coordinates: {}. Location on screen: {}'.format(
+                num + 1, coordinates, 'RIGHT' if coordinates[0] > 860 else 'LEFT'))
     else:
         results.append('No logos in the video found')
-    return "\n".join(results)
+    return '\n'.join(results)
 
 
 def get_video_pid_hex(path2json):
@@ -90,11 +89,12 @@ def get_video_pid_hex(path2json):
     json_content = get_json_content(path2json)
     video = single_key_parser(json_content, 'Video')
     video_media_id = single_key_parser(video, 'MediaID')[0]
-    media_id_pid_list = two_keys_parser(json_content, "MediaID", "PID")
+    media_id_pid_list = two_keys_parser(json_content, 'MediaID', 'PID')
     for chunk in media_id_pid_list:
         for k, v in chunk.items():
             if video_media_id == chunk[k]:
                 return 'Video PID in hex: {}'.format(hex(chunk['PID']))
+    return 'Video PID not found'
 
 
 if __name__ == '__main__':
@@ -102,6 +102,3 @@ if __name__ == '__main__':
     print(get_audio(path))
     print(get_logos(path))
     print(get_video_pid_hex(path))
-
-
-
